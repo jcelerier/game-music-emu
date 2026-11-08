@@ -37,6 +37,17 @@ public:
 	static const unsigned int status_addr = 0x4015;
 	int read_status( nes_time_t );
 
+	// Host inspection at the current emulation time, without a CPU read cycle
+	// or IRQ acknowledgement. Safe at time zero between end_frame calls.
+	int active_channels() const
+	{
+		int result = 0;
+		for ( int i = 0; i < osc_count; ++i )
+			if ( oscs [i]->length_counter )
+				result |= 1 << i;
+		return result;
+	}
+
 	// Run all oscillators up to specified time, end current time frame, then
 	// start a new time frame at time 0. Time frames have no effect on emulation
 	// and each can be whatever length is convenient.
