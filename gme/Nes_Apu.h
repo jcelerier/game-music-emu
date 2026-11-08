@@ -48,6 +48,13 @@ public:
 		return result;
 	}
 
+	// The last byte can still be buffered or shifting after the read counter
+	// reaches zero; this is playback activity, not the CPU $4015 status bit.
+	bool dmc_playing() const
+	{
+		return dmc.length_counter || dmc.buf_full || !dmc.silence;
+	}
+
 	// Run all oscillators up to specified time, end current time frame, then
 	// start a new time frame at time 0. Time frames have no effect on emulation
 	// and each can be whatever length is convenient.
